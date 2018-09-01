@@ -5,6 +5,8 @@ import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
+import db from './db/mongo';
+
 import indexRouter from './routes/index';
 import roomsRouter from './routes/rooms';
 
@@ -20,6 +22,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    console.log('MongoDB connected');
+});
+
 app.use('/', indexRouter);
 app.use('/rooms', roomsRouter);
 
@@ -29,7 +36,7 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
