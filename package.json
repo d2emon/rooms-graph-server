@@ -1,10 +1,28 @@
 {
   "name": "rooms-graph-server",
   "version": "0.1.0",
+  "description": "Server for graph rooms",
+  "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "node ./src/index"
+    "start": "DEBUG=rooms:* nodemon src/index.js --exec babel-node --presets es2015,stage-2",
+    "build": "babel src -d dist",
+    "serve": "node dist/index.js",
+    "test": "mocha --compilers js:babel-register"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d2emon/rooms-graph-server.git"
+  },
+  "keywords": [
+    "map"
+  ],
+  "author": "Dmitry Kutsenko <d2emonium@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/d2emon/rooms-graph-server/issues"
+  },
+  "homepage": "https://github.com/d2emon/rooms-graph-server#readme",
   "dependencies": {
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -12,5 +30,11 @@
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "morgan": "~1.9.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "nodemon": "^1.18.4"
   }
 }
