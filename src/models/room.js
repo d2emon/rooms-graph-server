@@ -9,7 +9,7 @@ const exitsSchema = mongoose.Schema({
     down: Number,
 });
 const roomSchema = mongoose.Schema({
-    roomId: { type: Number, index: true, unique: true },
+    roomId: { type: Number, index: true, unique: true, required: true },
     exits: exitsSchema,
     name: String,
     description: String,

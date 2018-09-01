@@ -1,0 +1,29 @@
+POST http://localhost:3000/rooms?name=Room&roomId=12
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+GET http://localhost:3000/rooms
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+GET http://localhost:3000/rooms/12
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+PUT http://localhost:3000/rooms/12?name=Room
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+DELETE http://localhost:3000/rooms/12
+Accept: */*
+Cache-Control: no-cache
+
+###
