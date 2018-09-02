@@ -5,7 +5,7 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get('/', (req, res) => {
-    Room.find()
+    Room.find().select({"roomId": 1})
         .then(response => res.json({rooms: response}))
         .catch(error => res.status(500).json({error: error}));
 });

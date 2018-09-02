@@ -8,7 +8,8 @@
     "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register",
+    "load": "babel-node src/load_files.js"
   },
   "repository": {
     "type": "git",
