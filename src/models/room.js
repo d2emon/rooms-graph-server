@@ -8,6 +8,7 @@ const exitsSchema = mongoose.Schema({
     up: { type: Number, default: 0 },
     down: { type: Number, default: 0 },
 });
+
 const roomSchema = mongoose.Schema({
     roomId: { type: Number, index: true, unique: true, required: true },
     exits: exitsSchema,
@@ -15,6 +16,8 @@ const roomSchema = mongoose.Schema({
     description: { type: String, default: "" },
     death: Boolean,
     nobr: Boolean,
+    zone: mongoose.Schema.ObjectId,
+    dark: false,
 });
 
 export default mongoose.model('Room', roomSchema);
