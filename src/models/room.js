@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Zone from './zone';
 
 const exitsSchema = mongoose.Schema({
     north: { type: Number, default: 0 },
@@ -16,7 +17,7 @@ const roomSchema = mongoose.Schema({
     description: { type: String, default: "" },
     death: Boolean,
     nobr: Boolean,
-    zone: mongoose.Schema.ObjectId,
+    zone: { type: mongoose.Schema.ObjectId, ref: 'Zone' },
     dark: false,
 });
 

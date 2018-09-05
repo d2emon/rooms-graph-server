@@ -62,7 +62,7 @@ const zone = (roomId) => {
         console.log("ERROR");
         return;
     }
-    return Zone.findOne({startRoomId: {"$lte": roomId}}).sort('-startRoomId');
+    return Zone.findOne({startRoomId: {"$gte": roomId}}).sort('startRoomId');
 };
 
 const loadRoom = (roomId) => new Promise((resolve, reject) => {

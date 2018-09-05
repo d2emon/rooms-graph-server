@@ -11,20 +11,23 @@ const go = (room, direction) => {
     // if (newRoomId <= 0) newRoomId = door(-newRoomId);
     if (newRoomId <= 0) throw new Error("You can't go that way");
 
-    return Room.findOne({roomId: newRoomId});
+    return Room.findOne({roomId: newRoomId})
+        .populate('zone');
 };
 
 router.get('/', (req, res) => {
-    Room.find().select({"roomId": 1})
+    Room.find()
+        .select({"roomId": 1})
         .then(response => res.json({rooms: response}))
         .catch(error => res.status(500).json({error: error}));
 });
 
-router.get('/:room_id/:direction', (req, res) => {
-    const room_id = req.params.room_id;
+router.get('/:roomId/:direction', (req, res) => {
+    const roomId = req.params.roomId;
     const direction = req.param.direction;
 
     Room.findOne({roomId: roomId})
+        .populate('zone')
         .then(room => go(room, direction))
         .then(response => res.json({room: response}))
         .catch(error => res.status(500).json({error: error}));
@@ -33,6 +36,7 @@ router.get('/:room_id/:direction', (req, res) => {
 router.get('/:roomId', (req, res) => {
     const roomId = req.params.roomId;
     Room.findOne({roomId: roomId})
+        .populate('zone')
         .then(response => res.json({room: response}))
         .catch(error => res.status(500).json({error: error}));
 });
@@ -43,23 +47,22 @@ router.post('/', (req, res) => {
         .catch(error => res.status(500).json({error: error}));
 });
 
-router.put('/:room_id', (req, res) => {
-    const room_id = req.params.room_id;
+router.put('/:roomId', (req, res) => {
+    const roomId = req.params.roomId;
     let result;
-    Room.updateOne({room_id: room_id}, req.query)
+    Room.updateOne({roomId: roomId}, req.query)
         .then(response => {
             result = response;
-            return Room.find({slug: slug});
+            return Room.find({roomId: roomId})
+                .populate('zone');
         })
         .then(response => res.json({room: response, result: result}))
         .catch(error => res.status(500).json({error: error}));
-
-
 });
 
-router.delete('/:room_id', (req, res) => {
-    const room_id = req.params.room_id;
-    Room.deleteOne({room_id: room_id})
+router.delete('/:roomId', (req, res) => {
+    const roomId = req.params.roomId;
+    Room.deleteOne({roomId: roomId})
         .then(response => res.json({result: response}))
         .catch(error => res.status(500).json({error: error}));
 });

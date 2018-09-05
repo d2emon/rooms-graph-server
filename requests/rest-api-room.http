@@ -10,7 +10,7 @@ Cache-Control: no-cache
 
 ###
 
-GET http://localhost:3000/rooms/12
+GET http://localhost:3000/rooms/120
 Accept: */*
 Cache-Control: no-cache
 
