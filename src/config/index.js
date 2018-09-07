@@ -2,6 +2,6 @@
 export default {
     mongo: {
         // url: "mongodb://mongo/rooms"
-        url: "mongodb://localhost/rooms"
+        url: process.env.PORT || "mongodb://mongo/rooms"
     }
 }
