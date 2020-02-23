@@ -4,6 +4,8 @@ import mongoose, {
 } from 'mongoose';
 import Zone, { ZoneInterface } from './Zone';
 
+export type ExitId = 'north' | 'east' | 'south' | 'west' | 'up' | 'down';
+
 export interface ExitsInterface extends Document {
     north: number,
     east: number,

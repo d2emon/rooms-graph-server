@@ -1,6 +1,5 @@
-'use strict';
-import express from 'express';
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
 /* GET home page. */
 router.get('/', (req, res) => {

@@ -8,7 +8,7 @@ import cors from 'cors';
 
 import db from './db/mongo';
 
-import indexRouter from './routes/index';
+import indexRouter from './routes';
 import roomsRouter from './routes/rooms';
 import zonesRouter from './routes/zones';
 
