@@ -65,4 +65,4 @@ router.delete('/:roomId', (req, res) => {
         .catch(error => res.status(500).json({ error }));
 });
 
-module.exports = router;
+export default router;

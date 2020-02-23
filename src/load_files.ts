@@ -1,12 +1,10 @@
-#!/usr/bin/env babel-node
-'use strict';
 import db from './db/mongo';
-import Room from './models/Room';
-import Zone from './models/Zone';
+import Room, { RoomInterface, ExitId } from './models/Room';
+import Zone, {ZoneInterface} from './models/Zone';
 import fs from 'fs';
 import path from 'path';
 
-const exitNames = [
+const exitNames: ExitId[] = [
     "north",
     "east",
     "south",
@@ -43,20 +41,20 @@ const zones = [
     {name: "WASTE", startRoomId: 99999},
 ];
 
-function loadZones () {
+function loadZones (): void {
     zones.forEach(z => {
-        let zone = new Zone(z);
+        const zone = new Zone(z);
         zone.save();
     })
 }
 
-function isDark (roomId) {
+function isDark (roomId: number): boolean {
     if ((roomId === 1100) || (roomId === 1101)) return false;
     if ((roomId >= 1113) && (roomId <= 1123)) return true;
     return !((roomId > 399) || (roomId < 300));
 }
 
-const zone = (roomId) => {
+const zone = (roomId: string) => {
     console.log("roomId = ", parseInt(roomId));
     if (!roomId) {
         console.log("ERROR");
@@ -65,7 +63,7 @@ const zone = (roomId) => {
     return Zone.findOne({startRoomId: {"$gte": roomId}}).sort('startRoomId');
 };
 
-const loadRoom = (roomId) => new Promise((resolve, reject) => {
+const loadRoom = (roomId: number): Promise<RoomInterface> => new Promise((resolve, reject) => {
     const roomsPath = path.join(__dirname, "..", "data", "files");
     const fileName = path.join(roomsPath, '' + roomId);
     fs.readFile(fileName, (err, data) => {
@@ -81,15 +79,15 @@ const loadRoom = (roomId) => new Promise((resolve, reject) => {
                 nobr: false,
             };
             */
-            zone(roomId)
+            zone(`${roomId}`)
                 .then(z => {
                     console.log(z);
-                    const room = new Room({
-                        roomId: roomId,
+                    const room: RoomInterface = new Room({
+                        roomId,
                         exits: {},
                         zone: z,
                         dark: isDark(roomId),
-                    });
+                    }) as RoomInterface;
                     const contents = data.toString();
                     const strings = contents.split("\n");
                     strings.forEach((s, id) => {
@@ -115,7 +113,7 @@ const loadRoom = (roomId) => new Promise((resolve, reject) => {
     });
 });
 
-const saveRoom = (room) => {
+const saveRoom = (room: RoomInterface) => {
     room.save()
         .then(response => {
            console.log(response);
@@ -129,7 +127,7 @@ db.once('open', () => {
     loadZones();
     for (let i = 0; i < 1500; i++) {
         loadRoom(i)
-            .then(response => saveRoom(response))
+            .then((response: RoomInterface) => saveRoom(response))
             .catch(err => {
                 console.log("ERROR with ", i);
                 console.error(err);
