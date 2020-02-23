@@ -1,6 +1,6 @@
 'use strict';
 import express from 'express';
-import Zone from '../models/zone';
+import Zone from '../models/Zone';
 const router = express.Router();
 
 router.get('/', (req, res) => {

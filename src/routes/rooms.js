@@ -1,6 +1,6 @@
 'use strict';
 import express from 'express';
-import Room from '../models/room';
+import Room from '../models/Room';
 const router = express.Router();
 
 const go = (room, direction) => {

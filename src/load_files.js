@@ -1,8 +1,8 @@
 #!/usr/bin/env babel-node
 'use strict';
 import db from './db/mongo';
-import Room from './models/room';
-import Zone from './models/zone';
+import Room from './models/Room';
+import Zone from './models/Zone';
 import fs from 'fs';
 import path from 'path';
 
