@@ -42,9 +42,9 @@ const zones = [
 ];
 
 function loadZones (): void {
-    zones.forEach(z => {
-        const zone = new Zone(z);
-        zone.save();
+    zones.forEach(zoneData => {
+        const z = new Zone(zoneData);
+        return z.save();
     })
 }
 
@@ -55,7 +55,7 @@ function isDark (roomId: number): boolean {
 }
 
 const zone = (roomId: string) => {
-    console.log("roomId = ", parseInt(roomId));
+    console.log("roomId = ", parseInt(roomId, 0));
     if (!roomId) {
         console.log("ERROR");
         return;
@@ -92,7 +92,7 @@ const loadRoom = (roomId: number): Promise<RoomInterface> => new Promise((resolv
                     const strings = contents.split("\n");
                     strings.forEach((s, id) => {
                         if (id < exitNames.length) {
-                            let exitId = parseInt(s);
+                            let exitId = parseInt(s, 0);
                             if (exitId > 1000) exitId = 1000 - exitId;
                             else exitId = -exitId;
 

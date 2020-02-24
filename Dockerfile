@@ -6,6 +6,12 @@ COPY package.json ./
 
 RUN npm install
 
+COPY ts*.json ./
+
+COPY public ./public
+
+COPY views ./views
+
 COPY src ./src
 
 RUN mkdir ./data

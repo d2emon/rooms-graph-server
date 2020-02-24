@@ -26,7 +26,7 @@ export interface RoomInterface extends Document {
     dark: boolean,
 }
 
-const exitsSchema: Schema = new Schema({
+const exitsSchema: Schema = new mongoose.Schema({
     north: { type: Number, default: 0 },
     east: { type: Number, default: 0 },
     west: { type: Number, default: 0 },
@@ -35,14 +35,14 @@ const exitsSchema: Schema = new Schema({
     down: { type: Number, default: 0 },
 });
 
-const roomSchema: Schema = new Schema({
+const roomSchema: Schema = new mongoose.Schema({
     roomId: { type: Number, index: true, unique: true, required: true },
     exits: exitsSchema,
     name: String,
     description: { type: String, default: "" },
     death: Boolean,
     nobr: Boolean,
-    zone: { type: Schema.Types.ObjectId, ref: 'Zone' },
+    zone: { type: mongoose.Schema.Types.ObjectId, ref: 'Zone' },
     dark: { type: Boolean, default: false },
 });
 

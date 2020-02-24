@@ -8,7 +8,7 @@ export interface ZoneInterface extends Document {
     name: string,
 }
 
-const zoneSchema: Schema = new Schema({
+const zoneSchema: Schema = new mongoose.Schema({
     startRoomId: { type: Number, index: true, unique: true, required: true },
     name: String,
 });

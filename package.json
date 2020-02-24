@@ -2,18 +2,16 @@
   "name": "rooms-graph-server",
   "version": "0.1.0",
   "description": "Server for graph rooms",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "start": "nodemon src/index.ts --exec babel-node --presets es2015,stage-2",
-    "build": "babel src -d dist",
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
     "serve": "node dist/index.js",
     "test": "mocha --compilers js:babel-register",
-    "load": "babel-node src/load_files.ts",
-    "ts-prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
-    "ts-build": "npm run ts-prebuild && tsc",
-    "ts-prestart": "npm run ts-build",
-    "ts-start": "npm run ts-prestart && npm ."
+    "load": "babel-node src/load_files.ts"
   },
   "repository": {
     "type": "git",
