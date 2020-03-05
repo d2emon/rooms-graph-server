@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Room, { RoomInterface, ExitId } from '../models/Room';
+
 const router = Router();
 
 const go = (room: RoomInterface, direction: ExitId) => {

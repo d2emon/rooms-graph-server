@@ -10,6 +10,7 @@ import db from './db/mongo';
 import indexRouter from './routes';
 import roomsRouter from './routes/rooms';
 import zonesRouter from './routes/zones';
+import resetRouter from './routes/reset';
 
 const app = express();
 
@@ -32,6 +33,7 @@ db.once('open', () => {
 app.use('/', indexRouter);
 app.use('/rooms', roomsRouter);
 app.use('/zones', zonesRouter);
+app.use('/reset', resetRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

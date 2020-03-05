@@ -4,12 +4,12 @@ import mongoose, {
 } from 'mongoose';
 
 export interface ZoneInterface extends Document {
-    startRoomId: number,
+    startRoomId?: number,
     name: string,
 }
 
 const zoneSchema: Schema = new mongoose.Schema({
-    startRoomId: { type: Number, index: true, unique: true, required: true },
+    startRoomId: { type: Number, index: true, unique: true },
     name: String,
 });
 

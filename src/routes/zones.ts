@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Zone from '../models/Zone';
+
 const router = Router();
 
 router.get('/', (req, res) => {

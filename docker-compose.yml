@@ -11,6 +11,13 @@ services:
     restart: always
     ports:
       - 8081:8081
+  data-server:
+    build: ./services/rooms-data-server/
+    ports:
+    - 8080:8080
+    volumes:
+    - ./services/rooms-data-server/src:/usr/src/app/src
+    - ./data/files:/usr/src/app/data/files
   server:
     build: .
     ports:
@@ -20,5 +27,7 @@ services:
     depends_on:
     - mongo
     volumes:
-      - ./src:/usr/src/app/src
-      - ./data/files:/usr/src/app/data/files
+    - ./src:/usr/src/app/src
+    - ./data/files:/usr/src/app/data/files
+    - ./node_modules:/usr/src/app/node_modules
+    - ./dist:/usr/src/app/dist

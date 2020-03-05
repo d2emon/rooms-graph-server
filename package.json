@@ -11,7 +11,6 @@
     "start": "node .",
     "serve": "node dist/index.js",
     "test": "mocha --compilers js:babel-register",
-    "load": "babel-node src/load_files.ts"
   },
   "repository": {
     "type": "git",
@@ -27,6 +26,7 @@
   },
   "homepage": "https://github.com/d2emon/rooms-graph-server#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.9",
