@@ -11,6 +11,7 @@ import indexRouter from './routes';
 import roomsRouter from './routes/rooms';
 import zonesRouter from './routes/zones';
 import resetRouter from './routes/reset';
+import mudRouter from './routes/mud';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/', indexRouter);
 app.use('/rooms', roomsRouter);
 app.use('/zones', zonesRouter);
 app.use('/reset', resetRouter);
+app.use('/mud', mudRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
