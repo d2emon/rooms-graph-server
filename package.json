@@ -10,7 +10,7 @@
     "prestart": "npm run build",
     "start": "node .",
     "serve": "node dist/index.js",
-    "test": "mocha --compilers js:babel-register",
+    "test": "mocha --compilers js:babel-register"
   },
   "repository": {
     "type": "git",
