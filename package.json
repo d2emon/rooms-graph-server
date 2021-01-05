@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/d2emon/rooms-graph-server#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "debug": "~2.6.9",
