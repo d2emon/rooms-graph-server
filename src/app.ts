@@ -1,60 +1,41 @@
 import express from 'express';
-import path from 'path';
-import createError from 'http-errors';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
+
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+// import path from 'path';
 
-import db from './db/mongo';
+import db from './db/mongo'; //
+// import config from './config'; //
+import * as middlewares from './middlewares';
 
-import indexRouter from './routes';
 import roomsRouter from './routes/rooms';
 import zonesRouter from './routes/zones';
 import resetRouter from './routes/reset';
 import mudRouter from './routes/mud';
 
+require('dotenv').config();
+
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, '..', 'views'));
-app.set('view engine', 'jade');
-
+app.use(morgan('dev'));
+app.use(helmet());
 app.use(cors());
-app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '..', 'public')));
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-    console.log('MongoDB connected');
+  /* eslint-disable no-console */
+  console.log('MongoDB connected');
+  /* eslint-enable no-console */
 });
 
-app.use('/', indexRouter);
 app.use('/rooms', roomsRouter);
 app.use('/zones', zonesRouter);
 app.use('/reset', resetRouter);
 app.use('/mud', mudRouter);
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-    next(createError(404));
-});
-
-// error handler
-app.use((err, req, res) => {
-    // set locals, only providing error in development
-    // @ts-ignore
-    res.locals.message = err.message;
-    // @ts-ignore
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    // @ts-ignore
-    res.status(err.status || 500);
-    // @ts-ignore
-    res.render('error');
-});
+app.use(middlewares.notFound);
+app.use(middlewares.errorHandler);
 
 export default app;
