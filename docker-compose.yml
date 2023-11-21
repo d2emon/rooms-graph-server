@@ -1,33 +1,47 @@
 version: '3'
 services:
   mongo:
-    image: mongo:latest
+    image: mongo:4.4.18
     ports:
-    - 27017:27017
+      - 37017:27017
+    restart: always
     volumes:
       - ./data/db:/data/db
   mongo-express:
     image: mongo-express
+    depends_on:
+      - mongo
+    links:
+      - mongo
+    ports:
+      - 38081:8081
     restart: always
-    ports:
-      - 8081:8081
   data-server:
-    build: ./services/rooms-data-server/
+    build: ./services/data-server
+    command: npm run dev
+    depends_on:
+      - mongo
+    links:
+      - mongo
     ports:
-    - 8080:8080
+      - 35000:5000
+    restart: always
     volumes:
-    - ./services/rooms-data-server/src:/usr/src/app/src
-    - ./data/files:/usr/src/app/data/files
+      - ./services/data/files:/app/data/files
   server:
     build: .
-    ports:
-    - 3000:3000
-    links:
-    - mongo
+    command: npm run dev
     depends_on:
-    - mongo
+      - mongo
+    env_file:
+      - ./env/dev.env
+    links:
+      - mongo
+    ports:
+      - 33000:3000
     volumes:
-    - ./src:/usr/src/app/src
-    - ./data/files:/usr/src/app/data/files
-    - ./node_modules:/usr/src/app/node_modules
-    - ./dist:/usr/src/app/dist
+      - ./data/files:/app/data/files
+      - ./dist:/app/dist
+      - ./node_modules:/app/node_modules
+      - ./package.json:/app/package.json
+      - ./src:/app/src
