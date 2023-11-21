@@ -23,7 +23,7 @@ const withTty = async (
 
   await bottomScreen();
   const result = await onAfterScreen();
-  await topScreen;
+  await topScreen();
   return result;
 };
   

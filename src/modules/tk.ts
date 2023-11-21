@@ -1,5 +1,6 @@
 import withConversion, { getBasePrompt } from './helpers/conversationMode';
-import { appendMessageBuffer } from './helpers/messageBuffer';
+import { checkFighting } from './helpers/fighting';
+import { appendMessageBuffer, getFromBuffer } from './helpers/messageBuffer';
 import withTty from './helpers/tty';
 
 interface PlayerInterface {
@@ -16,8 +17,6 @@ interface MessageOptions {
   // * nadj
   curch: number;
   curmode: number;
-  inFight: number; // extern long in_fight;
-  fighting: number; // extern long fighting;
   gamecom: (action: string) => Promise<void>;
   special: (action: string, name: string) => Promise<number>;
 
@@ -36,10 +35,6 @@ interface MessageOptions {
   myLev: number; // extern long my_lev;
   // * getPrompt
 
-  pbfr: () => Promise<void>;
-  // * showOutput
-  // * sendMessage
-
   player: PlayerInterface;
   // * getPrompt
   // * showOutput
@@ -54,6 +49,7 @@ const getPrompt = (options: MessageOptions) => {
 
     player,
   } = options;
+
   let result = '';
 
   if (debugMode) {
@@ -73,23 +69,25 @@ const getPrompt = (options: MessageOptions) => {
 
 const onBeforePrompt = async (name: string, options: MessageOptions) => {
   const {
-    pbfr,
-    setProgname,
-    //
     player,
   } = options;
-        
-  const prmpt = getPrompt(options);
-    
-  await pbfr();
-    
+
+  const prompt = getPrompt(options);
+
+  const messages: string[] = await getFromBuffer();
+  
+  let title = '';
   if (player.visibility > 9999) {
-    await setProgname(0, '-csh');
+    title = '-csh';
   } else if (player.visibility === 0) {
-    await setProgname(0, `   --}----- ABERMUD -----{--     Playing as ${name}`);
+    title = `   --}----- ABERMUD -----{--     Playing as ${name}`;
   }
 
-  return prmpt;
+  return {
+    messages,
+    prompt,
+    title,
+  };
 };
 
 const onAfterPrompt = async (name: string, options: MessageOptions) => {
@@ -107,9 +105,15 @@ const showOutput = (name: string, options: MessageOptions) => withTty(async () =
     sigAloff,
     sigAlon,
   } = options;
-  const prmpt = await onBeforePrompt(name, options);
+  const {
+    // messages,
+    prompt,
+    // title,
+  } = await onBeforePrompt(name, options);
   await sigAlon();
-  keyInput(prmpt, 80);
+
+  keyInput(prompt, 80);
+
   await sigAloff();
   return onAfterPrompt(name, options);
 });
@@ -137,45 +141,21 @@ const afterConversion = (name: string, options: MessageOptions) => async (work: 
   const {
     curch,
     curmode,
-    fighting,
-    inFight,
     //
     gamecom,
     special,
-    //
-    getPlayer,
   } = options;
 
-  let newInFight: number;
-  let newFighting: number;
-  
-  let a: number;
+  const isQuit = (work.toLowerCase() === '.q');
   if (curmode === 1) {
     await gamecom(work);
-  } else {
-    if ((work.toLowerCase() === '.q') && !work) {
-      a = await special(work, name);
-    }
+  } else if (isQuit && !work) {
+    await special(work, name);
   }
 
-  if (fighting > -1) {
-    const fightingPlayer = await getPlayer(fighting);
-    if (!fightingPlayer) {
-      newInFight = 0;
-      newFighting = -1;
-    }
+  checkFighting(curch);
 
-    if (fightingPlayer?.channel !== curch) {
-      newInFight = 0;
-      newFighting = -1;
-    }
-  }
-
-  if (inFight) {
-    newInFight -= 1;
-  }
-
-  return work.toLowerCase() === '.q';
+  return isQuit;
 };
 
 const sendMessage = async (name: string, options: MessageOptions) => withConversion(

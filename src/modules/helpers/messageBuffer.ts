@@ -13,4 +13,8 @@ export const setMessageBuffer = (messages: string) => {
 export const appendMessageBuffer = (message: string) => {
   data.messages += message;
 };
-  
+
+// pbfr
+export const getFromBuffer = async () => {
+  return [];
+};
