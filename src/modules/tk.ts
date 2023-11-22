@@ -1,3 +1,4 @@
+import withAlarm from './helpers/alarm';
 import withConversion, { getBasePrompt } from './helpers/conversationMode';
 import { checkFighting } from './helpers/fighting';
 import { appendMessageBuffer, getFromBuffer } from './helpers/messageBuffer';
@@ -28,9 +29,6 @@ interface MessageOptions {
   // * showOutput
   keyBuff: string; // extern char key_buff[];
   keyInput: (value: string, maxLength: number) => Promise<void>; // key_input
-  setProgname: (id: number, value: string) => Promise<void>; // set_progname
-  sigAlon: () => Promise<void>; // sig_alon
-  sigAloff: () => Promise<void>; // sig_aloff
 
   myLev: number; // extern long my_lev;
   // * getPrompt
@@ -72,9 +70,11 @@ const onBeforePrompt = async (name: string, options: MessageOptions) => {
     player,
   } = options;
 
+  const messagesBefore: string[] = await getFromBuffer();
+      
   const prompt = getPrompt(options);
 
-  const messages: string[] = await getFromBuffer();
+  const messagesAfter: string[] = await getFromBuffer();
   
   let title = '';
   if (player.visibility > 9999) {
@@ -84,52 +84,43 @@ const onBeforePrompt = async (name: string, options: MessageOptions) => {
   }
 
   return {
-    messages,
+    messages: [
+      ...messagesBefore,
+      ...messagesAfter,
+    ],
     prompt,
     title,
   };
 };
 
-const onAfterPrompt = async (name: string, options: MessageOptions) => {
-  const {
-    keyBuff,
-  } = options;
-        
-  appendMessageBuffer(`[l]${keyBuff}\n[/l]`);
-  return keyBuff;
-};
-
 const showOutput = (name: string, options: MessageOptions) => withTty(async () => {
   const {
+    keyBuff,
+    //
     keyInput,
-    sigAloff,
-    sigAlon,
   } = options;
   const {
     // messages,
     prompt,
     // title,
   } = await onBeforePrompt(name, options);
-  await sigAlon();
 
-  keyInput(prompt, 80);
+  await withAlarm(() => keyInput(prompt, 80));
 
-  await sigAloff();
-  return onAfterPrompt(name, options);
+  return keyBuff;
 });
 
 const beforeConversion = (name: string, options: MessageOptions) => async () => {
   const {
     closeworld,
     openworld,
-    pbfr,
     rte,
   } = options;
 
-  await pbfr();
+  const work = await showOutput(name, options);
       
-  const work = showOutput(name, options);
-      
+  appendMessageBuffer(`[l]${work}\n[/l]`);
+
   await openworld();
   await rte(name);
   await closeworld();
