@@ -13,6 +13,7 @@ import roomsRouter from './routes/rooms';
 import zonesRouter from './routes/zones';
 import resetRouter from './routes/reset';
 import mudRouter from './routes/mud';
+import walkerRouter from './routes/walker';
 
 require('dotenv').config();
 
@@ -34,6 +35,7 @@ app.use('/rooms', roomsRouter);
 app.use('/zones', zonesRouter);
 app.use('/reset', resetRouter);
 app.use('/mud', mudRouter);
+app.use('/walk', walkerRouter);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
