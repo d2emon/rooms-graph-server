@@ -2,6 +2,7 @@ import express from 'express';
 import { WalkerRequest } from '../interfaces/WalkerRequest';
 import World, { WorldData } from '../models/World';
 import WalkerResponse from '../interfaces/WalkerResponse';
+import Events from '../models/Events';
 
 const router = express.Router();
 
@@ -21,13 +22,15 @@ router.post<WalkerRequest, WalkerResponse>('/start/:name', async (req, res, next
         walker,
       });
     }
-    
-    // TODO: Process events [rte(name)]
-    // TODO: Save world [closeworld()]
+
+    await Events(walker.name).loadEvents();
     
     // TODO: Reset eventId
     // TODO: Start game [special(".g",name)]
     // TODO: Set setup flag [i_setup = 1]
+
+    // TODO: Load messages [pbfr()]
+
     return res.json({
       walker,
       links: {
@@ -49,7 +52,7 @@ router.get<WalkerRequest, WalkerResponse>('/messages', async (req, res) => {
   const walker = await world.getWalkerById(id as string);
 
   // TODO: Load messages [pbfr()]
-  
+
   return res.json({
     walker,
   });
@@ -69,11 +72,17 @@ router.post<WalkerRequest, WalkerResponse>('/action', async (req, res) => {
   }
     
   const walker = await world.getWalkerById(id as string);
-  
+    
+  if (!walker) {
+    return res.json({
+      walker,
+    });
+  }
+
   // TODO: Process action [sendmsg(walker.name)]
 
   // TODO: Process events [rte(name)] if rd_qd
-  // TODO: Save world [closeworld()]
+  await Events(walker.name).loadEvents(walker.eventId);
   // TODO: Reset rd_qd
 
   // TODO: Load messages [pbfr()]

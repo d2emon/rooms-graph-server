@@ -1,10 +1,15 @@
+import Event from '../interfaces/Event';
 import Walker from '../interfaces/Walker';
 import { createWalker, isWalkerExists } from './Walker';
 
 export interface WorldData {
+  // Walkers
   addWalker: (name: string) => Promise<Walker | null>;
   getWalkerById: (id: string) => Promise<Walker | null>;
   findPlayerByName: (name: string) => Promise<Walker | null>; // fpbn(name)
+  // Events
+  getEvents: (firstEventId: number | null, lastEventId: number | null) => Promise<Event[]>;
+  getLastEventId: () => Promise<number>; // findend
 }
 
 interface WorldInterface {
@@ -14,12 +19,24 @@ interface WorldInterface {
 interface SavedData {
   maxWalkerId: number; // maxu
   walkers: Walker[];
+  firstEventId: number;
+  lastEventId: number;
+  events: Event[];
 }
 
 const data: SavedData = {
   maxWalkerId: 16,
   walkers: [
     createWalker(0, 'Name'),
+  ],
+  firstEventId: 0,
+  lastEventId: 0,
+  events: [
+    {
+      id: 0,
+      code: 0,
+      payload: '',
+    },
   ],
 };
 
@@ -80,9 +97,33 @@ const load = async () => {
     return getWalker(walkerId);
   };
 
+  const normalizeEventId = (id: number) => (id - data.firstEventId);
+
+  const getLastEventId = async () => data.lastEventId;
+
+  const getEventById = async (id: number): Promise<Event> => {
+    const eventId = normalizeEventId(id);
+    return data.events[eventId];
+  };
+
+  const getEvents = async (firstEventId: number | null, lastEventId: number | null): Promise<Event[]> => {
+    if ((firstEventId === null) || (lastEventId === null)) {
+      return [];
+    }
+  
+    const eventIds: number[] = [];
+    for (let eventId = firstEventId; eventId < lastEventId; eventId += 1) {
+      eventIds.push(eventId);
+    }
+
+    return Promise.all(eventIds.map(getEventById));
+  };
+
   return {
     addWalker,
     findPlayerByName,
+    getEvents,
+    getLastEventId,
     getWalkerById,
   };
 };

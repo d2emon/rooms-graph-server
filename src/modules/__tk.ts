@@ -73,20 +73,7 @@
         }
      }
   
-  mstoout(block,name)
-  long *block;char *name;
-     {
-     extern long debug_mode;
-     char luser[40];
-     char *x;
-     x=(char *)block;
-     *//* Print appropriate stuff from data block *//*
-     strcpy(luser,name);lowercase(luser);
- if(debug_mode)    bprintf("\n<%d>",block[1]);
-     if (block[1]<-3) sysctrl(block,luser);
-     else
-        bprintf("%s", (x+2*sizeof(long)));
-     }
+  // mstoout(block,name)
   
  long gurum=0;
  long convflg=0;
@@ -112,49 +99,15 @@
      if (number>=199) cleanup(inpbk);
      if(number>=199) longwthr();
      }
-  
-  readmsg(channel,block,num)
-  long channel;
-  long *block;
-  int num;
-     {
-     long buff[64],actnum;
-     sec_read(channel,buff,0,64);
-     actnum=num*2-buff[0];
-     sec_read(channel,block,actnum,128);
-     }
-  
+
+// readmsg(channel,block,num) 
+
  FILE *fl_com;
  extern long findstart();
  extern long findend();
-  
-  rte(name)
-  char *name;
-     {
-     extern long cms;
-     extern long vdes,tdes,rdes;
-     extern FILE *fl_com;
-     extern long debug_mode;
-     FILE *unit;
-     long too,ct,block[128];
-     unit=openworld();
-     fl_com=unit;
-     if (unit==NULL) crapup("AberMUD: FILE_ACCESS : Access failed\n");
-     if (cms== -1) cms=findend(unit);
-     too=findend(unit);
-     ct=cms;
-     while(ct<too)
-        {
-        readmsg(unit,block,ct);
-        mstoout(block,name);
-        ct++;
-        }
-     cms=ct;
-     update(name);
-     eorte();
-     rdes=0;tdes=0;vdes=0;
-     }
-     
+
+ // rte(name)
+ 
  FILE *openlock(file,perm)
  char *file;
  char *perm;
@@ -254,8 +207,10 @@
            sprintf(xy,"\001s%s\001%s  has entered the game\n\001",name,name);
            sprintf(xx,"\001s%s\001[ %s  has entered the game ]\n\001",name,name);
            sendsys(name,name,-10113,curch,xx);
-           rte(name);
-           if(randperc()>50)trapch(-5);
+
+         Events.process(walker.name);
+
+         if(randperc()>50)trapch(-5);
  else{curch= -183;trapch(-183);}
  sendsys(name,name,-10000,curch,xy);
            break;
